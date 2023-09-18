@@ -1,6 +1,6 @@
-import aioredis
 import os
 from libprobe.asset import Asset
+from redis import asyncio as aioredis
 
 
 REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))

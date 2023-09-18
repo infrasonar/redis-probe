@@ -130,7 +130,7 @@ METRICS = {
     # 'redis_git_dirty',  # int
     # 'redis_git_sha1',  # int
     # 'redis_mode',  # str
-    # 'redis_version',  # str
+    'redis_version',  # str
     'rejected_connections',  # int
     # 'repl_backlog_active',  # int
     # 'repl_backlog_first_byte_offset',  # int
@@ -170,7 +170,7 @@ METRICS = {
     # 'tracking_total_prefixes',  # int
     # 'unexpected_error_replies',  # int
     # 'uptime_in_days',  # int
-    # 'uptime_in_seconds',  # int
+    'uptime_in_seconds',  # int
     'used_cpu_sys',  # float
     'used_cpu_sys_children',  # float
     'used_cpu_sys_main_thread',  # float

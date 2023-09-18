@@ -12,7 +12,7 @@ async def check_slowlog(
     def parse_slowlog_get(response, **_):
         return [
             {
-                'name': idx,
+                'name': str(idx),
                 'id': item[0],  # int
                 'start_time': item[1],  # int
                 'duration': item[2],  # int in microseconds

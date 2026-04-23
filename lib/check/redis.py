@@ -1,7 +1,7 @@
 import asyncio
 from libprobe.asset import Asset
 from libprobe.check import Check
-from . import get_conn
+from ..connection import get_conn
 
 
 METRICS = {

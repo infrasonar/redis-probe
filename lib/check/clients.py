@@ -1,25 +1,28 @@
 from collections import Counter
 from libprobe.asset import Asset
-from . import get_conn
+from libprobe.check import Check
+from ..connection import get_conn
 
 
-async def check_clients(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
+class CheckClients(Check):
+    key = 'clients'
+    unchanged_eol = 0
 
-    conn = get_conn(asset, asset_config, check_config)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    client_list = await conn.client_list()
-    ct = Counter(cl['name'] for cl in client_list)
-    clients = [
-        {
-            'name': name,
-            'connections': connections
+        conn = get_conn(asset, local_config, config)
+
+        client_list = await conn.client_list()
+        ct = Counter(cl['name'] for cl in client_list)
+        clients = [
+            {
+                'name': name,
+                'connections': connections
+            }
+            for name, connections in ct.items()
+        ]
+
+        return {
+            'clients': clients,
         }
-        for name, connections in ct.items()
-    ]
-
-    return {
-        'clients': clients,
-    }

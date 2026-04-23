@@ -1,23 +1,26 @@
 from libprobe.asset import Asset
-from . import get_conn
+from libprobe.check import Check
+from ..connection import get_conn
 
 
-async def check_commandstats(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
+class CheckCommandstats(Check):
+    key = 'commandstats'
+    unchanged_eol = 0
 
-    conn = get_conn(asset, asset_config, check_config)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    commandstats = await conn.info('commandstats')
-    commandstats = [
-        {
-            'name': command,
-            **stats
+        conn = get_conn(asset, local_config, config)
+
+        commandstats = await conn.info('commandstats')
+        commandstats = [
+            {
+                'name': command,
+                **stats
+            }
+            for command, stats in commandstats.items()
+        ]
+
+        return {
+            'commandstats': commandstats,
         }
-        for command, stats in commandstats.items()
-    ]
-
-    return {
-        'commandstats': commandstats,
-    }

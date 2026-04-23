@@ -18,9 +18,9 @@ class CheckSlowlog(Check):
                 'id': item[0],  # int
                 'start_time': item[1],  # int
                 'duration': item[2],  # int in microseconds
-                # Redis Enterprise injects another entry at index [3], which has
-                # the complexity info (i.e. the value N in case the command has
-                # an O(N) complexity) instead of the command.
+                # Redis Enterprise injects another entry at index [3], which
+                # has the complexity info (i.e. the value N in case the command
+                # has an O(N) complexity) instead of the command.
                 'complexity': item[3] if isinstance(item[3], int) else None,
                 'command': [a.decode() for a in item[-3]],
                 'client_addr': item[-2].decode(),

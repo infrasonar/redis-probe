@@ -1,5 +1,6 @@
 import asyncio
 from libprobe.asset import Asset
+from libprobe.check import Check
 from . import get_conn
 
 
@@ -201,34 +202,35 @@ METRICS = {
 }
 
 
-async def check_redis(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
+class CheckRedis(Check):
+    key = 'redis'
+    unchanged_eol = 0
 
-    conn = get_conn(asset, asset_config, check_config)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    loop = asyncio.get_event_loop()
+        conn = get_conn(asset, local_config, config)
 
-    # By running a ping first, we get a recent connection in an attempt to
-    # reduce the chance of connection time affecting our latency measurements
-    await conn.ping()
+        loop = asyncio.get_running_loop()
 
-    start = loop.time()
-    await conn.ping()
-    ping_timeit = loop.time() - start
+        # TODO cache connection, so first ping is not needed
+        await conn.ping()
 
-    start = loop.time()
-    info = await conn.info()
-    info_timeit = loop.time() - start
+        start = loop.time()
+        await conn.ping()
+        ping_timeit = loop.time() - start
 
-    item = {
-        m: info.get(m) for m in METRICS
-    }
-    item['name'] = 'redis'
-    item['info_timeit'] = info_timeit
-    item['ping_timeit'] = ping_timeit
+        start = loop.time()
+        info = await conn.info()
+        info_timeit = loop.time() - start
 
-    return {
-        'redis': [item],
-    }
+        item = {
+            m: info.get(m) for m in METRICS
+        }
+        item['name'] = 'redis'
+        item['info_timeit'] = info_timeit
+        item['ping_timeit'] = ping_timeit
+
+        return {
+            'redis': [item],
+        }

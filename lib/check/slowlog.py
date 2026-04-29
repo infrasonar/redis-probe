@@ -29,7 +29,8 @@ class CheckSlowlog(Check):
 
         conf = await conn.config_get('slowlog-max-len')
         slowlog_max_len = int(conf['slowlog-max-len'])
-        conn.set_response_callback('SLOWLOG GET', parse_slowlog_get)
+        conn.set_response_callback(
+            'SLOWLOG GET', parse_slowlog_get)  # type: ignore
         slowlog = await conn.slowlog_get(slowlog_max_len)
 
         return {

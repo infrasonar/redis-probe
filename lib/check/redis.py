@@ -214,10 +214,10 @@ class CheckRedis(Check):
         loop = asyncio.get_running_loop()
 
         # TODO cache connection, so first ping is not needed
-        await conn.ping()  # type: ingore
+        await conn.ping()  # type: ignore
 
         start = loop.time()
-        await conn.ping()  # type: ingore
+        await conn.ping()  # type: ignore
         ping_timeit = loop.time() - start
 
         start = loop.time()

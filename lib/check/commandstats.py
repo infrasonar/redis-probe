@@ -16,7 +16,11 @@ class CheckCommandstats(Check):
         commandstats = [
             {
                 'name': command,
-                **stats
+                'calls': stats.get('calls'),  # int
+                'failed_calls': stats.get('failed_calls'),  # int
+                'rejected_calls': stats.get('rejected_calls'),  # int
+                'usec': stats.get('usec'),  # int
+                'usec_per_call': stats.get('usec_per_call'),  # float
             }
             for command, stats in commandstats.items()
         ]

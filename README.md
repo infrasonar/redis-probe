@@ -36,6 +36,8 @@ redis:
     password: "my-secret-password"
 ```
 
+At least `info`, `client|list`, `config|get` and `slowlog|get` operations should be allowed.
+
 ## Dry run
 
 Available checks:

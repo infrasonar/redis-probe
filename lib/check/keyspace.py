@@ -16,7 +16,9 @@ class CheckKeyspace(Check):
         keyspace = [
             {
                 'name': name,
-                **stats
+                'avg_ttl': stats.get('avg_ttl'),  # int
+                'expires': stats.get('expires'),  # int
+                'keys': stats.get('keys'),  # int
             }
             for name, stats in data.items()
             if isinstance(stats, dict)

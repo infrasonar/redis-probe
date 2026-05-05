@@ -6,7 +6,7 @@ from ..connection import get_conn
 
 class CheckClients(Check):
     key = 'clients'
-    unchanged_eol = 0
+    unchanged_eol = 14400
 
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:

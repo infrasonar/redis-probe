@@ -11,7 +11,7 @@ class CheckClients(Check):
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-        conn = get_conn(asset, local_config, config)
+        conn = await get_conn(asset, local_config, config)
 
         client_list = await conn.client_list()
         ct = Counter(cl['name'] for cl in client_list)

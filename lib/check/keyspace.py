@@ -10,7 +10,7 @@ class CheckKeyspace(Check):
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-        conn = get_conn(asset, local_config, config)
+        conn = await get_conn(asset, local_config, config)
 
         data = await conn.info('keyspace')
         keyspace = [

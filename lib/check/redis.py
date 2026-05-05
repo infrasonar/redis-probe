@@ -1,4 +1,3 @@
-import asyncio
 from libprobe.asset import Asset
 from libprobe.check import Check
 from ..connection import get_conn
@@ -209,27 +208,14 @@ class CheckRedis(Check):
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-        conn = get_conn(asset, local_config, config)
+        conn = await get_conn(asset, local_config, config)
 
-        loop = asyncio.get_running_loop()
-
-        # TODO cache connection, so first ping is not needed
-        await conn.ping()  # type: ignore
-
-        start = loop.time()
-        await conn.ping()  # type: ignore
-        ping_timeit = loop.time() - start
-
-        start = loop.time()
         info = await conn.info()
-        info_timeit = loop.time() - start
 
         item = {
             m: info.get(m) for m in METRICS
         }
         item['name'] = 'redis'
-        item['info_timeit'] = info_timeit
-        item['ping_timeit'] = ping_timeit
 
         return {
             'redis': [item],

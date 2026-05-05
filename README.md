@@ -30,7 +30,7 @@ docker build -t redis-probe . --no-cache
 Example configuration:
 
 ```yaml
-oraclezfs:
+redis:
   config:
     username: "my-user-name"
     password: "my-secret-password"

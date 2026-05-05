@@ -27,7 +27,14 @@ docker build -t redis-probe . --no-cache
 
 ## Config
 
-See the [SNMP probe](https://github.com/infrasonar/snmp-probe#config).
+Example configuration:
+
+```yaml
+oraclezfs:
+  config:
+    username: "my-user-name"
+    password: "my-secret-password"
+```
 
 ## Dry run
 

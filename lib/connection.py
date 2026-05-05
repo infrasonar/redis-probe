@@ -36,8 +36,8 @@ async def get_conn(
             port=port,
         )
         await conn.initialize()
-        if password is not None:
-            await conn.auth(username=username, password=password)
+        if password:
+            await conn.auth(password=password, username=username or None)
     except AuthenticationError:
         raise CheckException('Failed to authenticate')
     except ConnectionError:

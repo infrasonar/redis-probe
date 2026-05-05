@@ -1,24 +1,27 @@
 from libprobe.asset import Asset
-from . import get_conn
+from libprobe.check import Check
+from ..connection import get_conn
 
 
-async def check_replication(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> dict:
+class CheckReplication(Check):
+    key = 'replication'
+    unchanged_eol = 0
 
-    conn = get_conn(asset, asset_config, check_config)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    data = await conn.info('replication')
-    replication = [
-        {
-            'name': name,
-            **stats
+        conn = await get_conn(asset, local_config, config)
+
+        data = await conn.info('replication')
+        replication = [
+            {
+                'name': name,
+                **stats
+            }
+            for name, stats in data.items()
+            if isinstance(stats, dict)
+        ]
+
+        return {
+            'replication': replication,
         }
-        for name, stats in data.items()
-        if isinstance(stats, dict)
-    ]
-
-    return {
-        'replication': replication,
-    }

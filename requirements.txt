@@ -1,2 +1,2 @@
-libprobe==0.2.34
-redis==5.0.0
+libprobe==2.0.6
+redis==7.4.0

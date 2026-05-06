@@ -1,6 +1,7 @@
 from libprobe.asset import Asset
 from libprobe.check import Check
 from ..connection import get_conn
+from .utils import usec_to_seconds_as_int
 
 
 class CheckSlowlog(Check):
@@ -16,7 +17,7 @@ class CheckSlowlog(Check):
             return [{
                 'name': str(item[0]),
                 'start_time': item[1],  # int
-                'duration': item[2],  # int in microseconds
+                'duration': usec_to_seconds_as_int(item[2]),
                 # Redis Enterprise injects another entry at index [3], which
                 # has the complexity info (i.e. the value N in case the command
                 # has an O(N) complexity) instead of the command.

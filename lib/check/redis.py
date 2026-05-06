@@ -1,6 +1,7 @@
 from libprobe.asset import Asset
 from libprobe.check import Check
 from ..connection import get_conn
+from .utils import uint, usec_to_seconds, usec_to_seconds_as_int
 
 
 METRICS = {
@@ -201,18 +202,6 @@ METRICS = {
 }
 
 
-def uint(val: int | None) -> int | None:
-    if not isinstance(val, int) or val < 0:
-        return
-    return val
-
-
-def usec_to_seconds(val: int | None):
-    if not isinstance(val, int):
-        return
-    return int(val / 1_000_000)
-
-
 def to_keyspace_hit_ratio(item: dict):
     hits = item.get('keyspace_hits')
     misses = item.get('keyspace_misses')
@@ -244,7 +233,9 @@ class CheckRedis(Check):
             uint(item.get('aof_last_rewrite_time_sec'))
         item['rdb_last_bgsave_time_sec'] = \
             uint(item.get('rdb_last_bgsave_time_sec'))
-        item['server_time_sec'] = usec_to_seconds(item.get('server_time_usec'))
+        item['last_fork_sec'] = usec_to_seconds(item.get('last_fork_sec'))
+        item['server_time_sec'] = \
+            usec_to_seconds_as_int(item.get('server_time_usec'))
 
         return {
             'redis': [item],

@@ -233,7 +233,7 @@ class CheckRedis(Check):
             uint(item.pop('aof_last_rewrite_time_sec', None))
         item['rdb_last_bgsave_time_sec'] = \
             uint(item.pop('rdb_last_bgsave_time_sec', None))
-        item['latest_fork_usec'] = \
+        item['latest_fork_sec'] = \
             usec_to_seconds(item.pop('latest_fork_usec', None))
         item['server_time_sec'] = \
             usec_to_seconds_as_int(item.pop('server_time_usec', None))

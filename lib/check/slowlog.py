@@ -14,8 +14,7 @@ class CheckSlowlog(Check):
 
         def parse_slowlog_get(response, **_):
             return [{
-                'name': str(idx),
-                'id': item[0],  # int
+                'name': str(item[0]),
                 'start_time': item[1],  # int
                 'duration': item[2],  # int in microseconds
                 # Redis Enterprise injects another entry at index [3], which
@@ -25,7 +24,7 @@ class CheckSlowlog(Check):
                 'command': [a.decode() for a in item[-3]],
                 'client_addr': item[-2].decode(),
                 'client_name': item[-1].decode(),
-            } for idx, item in enumerate(response)]
+            } for item in response]
 
         conf = await conn.config_get('slowlog-max-len')
         slowlog_max_len = int(conf['slowlog-max-len'])

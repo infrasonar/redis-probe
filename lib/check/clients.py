@@ -1,4 +1,3 @@
-from collections import Counter
 from libprobe.asset import Asset
 from libprobe.check import Check
 from ..connection import get_conn
@@ -14,13 +13,14 @@ class CheckClients(Check):
         conn = await get_conn(asset, local_config, config)
 
         client_list = await conn.client_list()
-        ct = Counter(cl['name'] for cl in client_list)
         clients = [
             {
-                'name': name,
-                'connections': connections
+                'name': client['id'],
+                'addr': client.get('addr'),  # str
+                'flags': client.get('flags'),  # str
+                'client_name': client.get('name'),  # str
             }
-            for name, connections in ct.items()
+            for client in client_list
         ]
 
         return {

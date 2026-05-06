@@ -244,7 +244,7 @@ class CheckRedis(Check):
             uint(item.get('aof_last_rewrite_time_sec'))
         item['rdb_last_bgsave_time_sec'] = \
             uint(item.get('rdb_last_bgsave_time_sec'))
-        item['server_time'] = usec_to_seconds(item.get('server_time_usec'))
+        item['server_time_sec'] = usec_to_seconds(item.get('server_time_usec'))
 
         return {
             'redis': [item],

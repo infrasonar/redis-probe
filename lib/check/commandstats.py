@@ -20,9 +20,8 @@ class CheckCommandstats(Check):
                 'calls': stats.get('calls'),  # int
                 'failed_calls': stats.get('failed_calls'),  # int
                 'rejected_calls': stats.get('rejected_calls'),  # int
-                'sec': usec_to_seconds(stats.pop('usec', None)),
-                'sec_per_call':
-                    usec_to_seconds(stats.pop('usec_per_call', None)),
+                'sec': usec_to_seconds(stats.get('usec')),
+                'sec_per_call': usec_to_seconds(stats.get('usec_per_call')),
             }
             for command, stats in commandstats.items()
         ]

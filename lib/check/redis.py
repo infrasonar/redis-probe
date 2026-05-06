@@ -230,12 +230,13 @@ class CheckRedis(Check):
         item['name'] = 'redis'
         item['keyspace_hit_ratio'] = to_keyspace_hit_ratio(item)
         item['aof_last_rewrite_time_sec'] = \
-            uint(item.get('aof_last_rewrite_time_sec'))
+            uint(item.pop('aof_last_rewrite_time_sec', None))
         item['rdb_last_bgsave_time_sec'] = \
-            uint(item.get('rdb_last_bgsave_time_sec'))
-        item['last_fork_sec'] = usec_to_seconds(item.get('last_fork_sec'))
+            uint(item.pop('rdb_last_bgsave_time_sec', None))
+        item['last_fork_sec'] = \
+            usec_to_seconds(item.pop('last_fork_sec', None))
         item['server_time_sec'] = \
-            usec_to_seconds_as_int(item.get('server_time_usec'))
+            usec_to_seconds_as_int(item.pop('server_time_usec', None))
 
         return {
             'redis': [item],

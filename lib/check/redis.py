@@ -17,12 +17,12 @@ METRICS = {
     # 'allocator_rss_bytes',  # int
     # 'allocator_rss_ratio',  # float
     'aof_buffer_length',  # int/optional
-    # 'aof_current_rewrite_time_sec',  # int
+    # 'aof_current_rewrite_time_sec',  # int/-1
     'aof_current_size',  # int/optional
-    # 'aof_enabled',  # int
+    'aof_enabled',  # int
     # 'aof_last_bgrewrite_status',  # str
     # 'aof_last_cow_size',  # int
-    'aof_last_rewrite_time_sec',  # int
+    'aof_last_rewrite_time_sec',  # int/-1
     # 'aof_last_write_status',  # str
     'aof_rewrite_in_progress',  # int
     # 'aof_rewrite_scheduled',  # int
@@ -80,7 +80,7 @@ METRICS = {
     'loading_loaded_perc',  # float/optional
     'loading_eta_seconds',  # int/optional
     # 'lru_clock',  # int
-    # 'master_failover_state',  # str
+    'master_failover_state',  # str
     'master_link_down_since_seconds',  # int/optional
     'master_repl_offset',  # int
     # 'master_replid',  # str
@@ -110,7 +110,7 @@ METRICS = {
     # 'number_of_cached_scripts',  # int
     # 'number_of_functions',  # int
     # 'number_of_libraries',  # int
-    # 'os',  # str
+    'os',  # str
     # 'process_id',  # int
     # 'process_supervised',  # str
     'pubsub_channels',  # int
@@ -118,18 +118,18 @@ METRICS = {
     # 'pubsubshard_channels',  # int
     'rdb_bgsave_in_progress',  # int
     'rdb_changes_since_last_save',  # int
-    # 'rdb_current_bgsave_time_sec',  # int
-    # 'rdb_last_bgsave_status',  # str
-    'rdb_last_bgsave_time_sec',  # int
+    # 'rdb_current_bgsave_time_sec',  # int/-1
+    'rdb_last_bgsave_status',  # str
+    'rdb_last_bgsave_time_sec',  # int/-1
     # 'rdb_last_cow_size',  # int
     # 'rdb_last_load_keys_expired',  # int
     # 'rdb_last_load_keys_loaded',  # int
     # 'rdb_last_save_time',  # int
     # 'rdb_saves',  # int
-    # 'redis_build_id',  # str
+    'redis_build_id',  # str
     # 'redis_git_dirty',  # int
     # 'redis_git_sha1',  # int
-    # 'redis_mode',  # str
+    'redis_mode',  # str
     'redis_version',  # str
     'rejected_connections',  # int
     # 'repl_backlog_active',  # int
@@ -138,12 +138,12 @@ METRICS = {
     # 'repl_backlog_size',  # int
     # 'reply_buffer_expands',  # int
     # 'reply_buffer_shrinks',  # int
-    # 'role',  # str
+    'role',  # str
     # 'rss_overhead_bytes',  # int
     # 'rss_overhead_ratio',  # float
     # 'run_id',  # str
-    # 'second_repl_offset',  # int
-    # 'server_time_usec',  # int
+    # 'second_repl_offset',  # int/-1
+    'server_time_usec',  # int
     # 'slave_expires_tracked_keys',  # int
     'slave_repl_offset',  # int/optional
     # 'sync_full',  # int
@@ -201,6 +201,23 @@ METRICS = {
 }
 
 
+def uint(val: int | None) -> int | None:
+    if not isinstance(val, int) or val < 0:
+        return
+    return val
+
+
+def to_keyspace_hit_ratio(item: dict):
+    hits = item.get('keyspace_hits')
+    misses = item.get('keyspace_misses')
+    try:
+        assert isinstance(hits, int)
+        assert isinstance(misses, int)
+        return hits / (hits + misses) * 100
+    except Exception:
+        return
+
+
 class CheckRedis(Check):
     key = 'redis'
     unchanged_eol = 0
@@ -216,6 +233,11 @@ class CheckRedis(Check):
             m: info.get(m) for m in METRICS
         }
         item['name'] = 'redis'
+        item['keyspace_hit_ratio'] = to_keyspace_hit_ratio(item)
+        item['aof_last_rewrite_time_sec'] = \
+            uint(item.get('aof_last_rewrite_time_sec'))
+        item['rdb_last_bgsave_time_sec'] = \
+            uint(item.get('rdb_last_bgsave_time_sec'))
 
         return {
             'redis': [item],
